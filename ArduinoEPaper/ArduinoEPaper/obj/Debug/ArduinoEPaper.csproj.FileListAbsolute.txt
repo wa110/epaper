@@ -7,3 +7,12 @@ c:\users\thomas\documents\visual studio 2012\Projects\ArduinoEPaper\ArduinoEPape
 c:\users\thomas\documents\visual studio 2012\Projects\ArduinoEPaper\ArduinoEPaper\obj\Debug\ArduinoEPaper.exe
 c:\users\thomas\documents\visual studio 2012\Projects\ArduinoEPaper\ArduinoEPaper\obj\Debug\ArduinoEPaper.pdb
 c:\users\thomas\documents\visual studio 2012\Projects\ArduinoEPaper\ArduinoEPaper\obj\Debug\ArduinoEPaper.fMain.resources
+C:\Users\watanya\Documents\GitHub\epaper\ArduinoEPaper\ArduinoEPaper\bin\Debug\ArduinoEPaper.exe.config
+C:\Users\watanya\Documents\GitHub\epaper\ArduinoEPaper\ArduinoEPaper\obj\Debug\ArduinoEPaper.exe
+C:\Users\watanya\Documents\GitHub\epaper\ArduinoEPaper\ArduinoEPaper\obj\Debug\ArduinoEPaper.pdb
+C:\Users\watanya\Documents\GitHub\epaper\ArduinoEPaper\ArduinoEPaper\bin\Debug\ArduinoEPaper.exe
+C:\Users\watanya\Documents\GitHub\epaper\ArduinoEPaper\ArduinoEPaper\bin\Debug\ArduinoEPaper.pdb
+C:\Users\watanya\Documents\GitHub\epaper\ArduinoEPaper\ArduinoEPaper\obj\Debug\ArduinoEPaper.csprojResolveAssemblyReference.cache
+C:\Users\watanya\Documents\GitHub\epaper\ArduinoEPaper\ArduinoEPaper\obj\Debug\ArduinoEPaper.fMain.resources
+C:\Users\watanya\Documents\GitHub\epaper\ArduinoEPaper\ArduinoEPaper\obj\Debug\ArduinoEPaper.Properties.Resources.resources
+C:\Users\watanya\Documents\GitHub\epaper\ArduinoEPaper\ArduinoEPaper\obj\Debug\ArduinoEPaper.csproj.GenerateResource.Cache
