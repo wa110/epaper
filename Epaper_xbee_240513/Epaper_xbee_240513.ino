@@ -6,6 +6,14 @@
 #include <Wire.h>
 #include <EPD.h>
 #include <LM75A.h>
+#include <avr/power.h>
+#include <avr/sleep.h>
+ 
+ 
+const int XBee_wake = 9;         // Arduino pin used to sleep the XBee 
+int sleepStatus = 0;             // variable to store a request for sleep
+int count = 0;                   // counter
+ 
 
 //Font table with lookup function
 #include "C:\Users\watanya\Documents\Arduino\Paper_Text\font_table.h"
@@ -52,7 +60,7 @@ static int state = 0;
 uint8_t incomingByte;
 uint8_t inputText[256];
 static int nDataCounter = 0;
-const int BUFSIZE = 256;         // max message size is BUFSIZE - 1 to leave room for the end-of-string NULL character (i.e. 0x00)
+const int BUFSIZE = 128;         // max message size is BUFSIZE - 1 to leave room for the end-of-string NULL character (i.e. 0x00)
 const char EOM = '*';            // marks the end of the message
 const char SOM = '$';  // marks the end of the message
 char buffer[BUFSIZE] ;          //;    // here we store the message as we receive it char by char
@@ -93,6 +101,41 @@ void setup()
     }
   #endif
 }
+ /*===================================================================================*/
+void sleepNow()
+{
+    
+  set_sleep_mode(SLEEP_MODE_IDLE);   // sleep mode is set here
+  
+  // put the XBee to sleep
+  pinMode(XBee_wake, INPUT); // put pin in a high impedence state
+  digitalWrite(XBee_wake, HIGH);
+  sleep_enable();          // enables the sleep bit in the mcucr register
+                             // so sleep is possible. just a safety pin 
+  
+  power_adc_disable();
+  power_spi_disable();
+  power_timer0_disable();
+  power_timer1_disable();
+  power_timer2_disable();
+  power_twi_disable();
+  
+  
+  sleep_mode();            // here the device is actually put to sleep!!
+ 
+                             // THE PROGRAM CONTINUES FROM HERE AFTER WAKING UP
+  sleep_disable();         // first thing after waking from sleep:
+  // wake up the XBee
+  pinMode(XBee_wake, OUTPUT);
+  digitalWrite(XBee_wake, LOW);
+                            // disable sleep...
+  Serial.println("wakeup");
+  power_all_enable();
+  Serial.println("Awake");
+   
+}
+ /*===================================================================================*/
+
 
 
 // this function will have to analyze the message's contents and
@@ -103,12 +146,11 @@ void EDisplay(const char *msg)
     Serial.println(msg);   // print out the message
     int PositionOfLine = 0; // track the position of the line            
     EPD.begin(); // power up the EPD panel   
-         
+    EPD.clear();     
     //String inputText = "How are you?    I have got my   text to be quitebig, is it too  big now? Please let me know.    From Watanya.                   ";
   
       
-    for (uint8_t z = 0; z < 3; z++) 
-    {
+
           for(uint8_t CharRow = 0; CharRow<8; CharRow++)
           {
                 for(uint8_t row = 0; row<22; row++)
@@ -137,18 +179,17 @@ void EDisplay(const char *msg)
                  }
               PositionOfLine = PositionOfLine + 22;
           }
-         // delay (1000);
-        
-    }
+          
     
 }
 
-void clear ()
+ /*===================================================================================*/
+void clear()
 {
     EPD.begin(); // power up the EPD panel   
     EPD.clear();
 }
-
+ /*===================================================================================*/
 
 // main loop
 void loop() 
@@ -160,35 +201,46 @@ void loop()
     {
          
       ch = Serial.read();
-      Serial.print(ch);
+      //Serial.print(ch);
         //Serial.println("read");  
         if (ch == EOM) 
         {            // end-of-message
-            Serial.println("star ");
+            Serial.println("1");
             buffer[bufPos] = 0;     // string terminator
+             Serial.println("2");
             EDisplay(buffer);        // do something with the received message
+            Serial.println("3");
             bufPos = 0;             // restart for next messages
+            Serial.println("4");
+            sleepNow();
+            Serial.println("5");
         }
-        else if (ch == SOM)
+        else if (ch == '%')
         {
            clear();
-           Serial.println("clear");
+           Serial.print("clear");
+        }
+        else if (ch == '!')
+        {
+          
+           Serial.print('!');
+           bufPos = 0;
+           delay(200);
         }
         else 
         {
-            if (bufPos < (BUFSIZE - 1)) 
-            {        // if there's still room in the buffer
+            if (bufPos < (BUFSIZE - 1)) //take in data
+            { // if there's still room in the buffer
                 buffer[bufPos] = ch;             // store the received char
                 bufPos++;                        // forward 1 position in buffer
-               // Serial.println("input");
             }
-            else 
+            else // too much data
             {
                 Serial.println("Lost byte!");    // no more room, have to throw away the received char
             }
-          //  Serial.println("done");
         }
     }
+   
 
 }
 
