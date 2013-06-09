@@ -1,33 +1,32 @@
 void setup()
 {
   Serial.begin(9600);
-   Serial1.begin(9600);
+  Serial1.begin(9600);
 }
 int i = 0;
-char Data[128];// = "How are you?    I have got my   text to be quitebig, is it too  big now? Please let me know.    From Watanya.         *";
+char Data[129];// = "How are you?    I have got my   text to be quitebig, is it too  big now? Please let me know.    From Watanya.         *";
 static int state = 0;
 void loop()
 {
   //Serial.println("Wake the end device up.");
-  Serial1.print('!');
-  delay(3000);
   char ch,  ch0 ;
   
  
    switch(state) {
    case 0:
-   while (Serial.available() > 0) 
-   {
-       ch0 = Serial.read();
-        if (ch0 == '$')  // if recieve reply start senting data
-        {
-        Serial.println('#');
-        digitalWrite(13, HIGH);
-        state = 1;
-        } 
-   }
-   ch0 = 0;
-  // Serial.println(state);
+     
+     digitalWrite(13, LOW);
+     while (Serial.available() > 0) 
+     {
+         ch0 = Serial.read();
+          if (ch0 == '$')  // if recieve reply start senting data
+          {
+          Serial.println('#');
+          state = 1;
+          } 
+     }
+     ch0 = 0;
+     i=0;
    break;    
    
    case 1:
@@ -42,30 +41,34 @@ void loop()
             state = 2;
            }  
         }
-       
+       digitalWrite(13, HIGH);
        // Serial.println(state);
         break;
         
-  case 2:       
+  case 2:     
+  //Send data state  
+  Serial1.println('!');
+  delay(3000);
   while (Serial1.available() > 0) 
   {      
     ch = Serial1.read();
+  
     if (ch == '!')  // if recieve reply start senting data
     {  
       Serial.println("The end device woke up");
       Serial.println("Sent data: ");
-      for (int i = 0; i < 128; i++)
+      for (int i = 0; i < 130; i++)
       {
         Serial.print(Data[i]); //print data to serial monitor
         Serial1.print(Data[i]); // sent data to the end device
       }
-      Serial.println(" Data end");
-      delay(6000);
-      delay(4000);
-    
+
+      delay(50);
+      state = 0;
+       
     }
   }
-  state = 0;
+ 
  // Serial.println(state);
   break; 
 }
